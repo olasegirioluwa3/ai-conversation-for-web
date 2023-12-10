@@ -44,8 +44,8 @@ def send_email_report(email, content):
     email="taiwoomosehin6@gmail.com"
     content="Hello"
     # Email configuration
-    sender_email = 'oolasegiri@instinctwave.net'  # Your email address
-    sender_password = 'Olasegiri2021@'   # Your email password
+    sender_email = ''
+    sender_password = ''   # Your email password
     receiver_email = email  # Recipient's email address
     subject = 'Lead Created Report'
 
