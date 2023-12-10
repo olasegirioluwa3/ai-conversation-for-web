@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Template</title>
+</head>
+<body>
+    <h1>Chat with Assistant</h1>
+    <form id="chatForm">
+        <label for="threadId">Thread ID:</label>
+        <input type="text" id="threadId" name="threadId" required><br>
+
+        <label for="message">Your Message:</label>
+        <textarea id="message" name="message" rows="4" required></textarea><br>
+
+        <button type="button" onclick="sendMessage()">Send Message</button>
+    </form>
+
+    <!-- Add a button with an onclick event -->
+    <button onclick="makePhoneCall()">Call +1 854 588 5339</button>
+
+    <div id="responseContainer">
+        <h2>Assistant Response:</h2>
+        <p id="response"></p>
+    </div>
+
+    <script>
+        function sendMessage() {
+            // Get values from the form
+            const threadId = document.getElementById("threadId").value;
+            const message = document.getElementById("message").value;
+
+            // Make an API request to /chat
+            fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    thread_id: threadId,
+                    message: message,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the response
+                document.getElementById("response").innerText = data.response;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+    
+    <script>
+    function makePhoneCall() {
+        // Use the tel protocol to initiate the phone call
+        window.location.href = 'tel:+18545885339';
+    }
+</script>
+</body>
+</html>
