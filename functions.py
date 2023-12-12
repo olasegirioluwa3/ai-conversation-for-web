@@ -41,11 +41,11 @@ def create_lead(name, phone, address):
 
 # Add lead to Airtable
 def send_email_report(email, content):
-    email="taiwoomosehin6@gmail.com"
+    email="olasegirioluwafemi@gmail.com"
     content="Hello"
     # Email configuration
-    sender_email = ''
-    sender_password = ''   # Your email password
+    sender_email = os.environ['HOST_EMAIL_ADDRESS']
+    sender_password = os.environ['HOST_EMAIL_PASSWORD']   # Your email password
     receiver_email = email  # Recipient's email address
     subject = 'Lead Created Report'
 
@@ -61,7 +61,7 @@ def send_email_report(email, content):
 
     try:
         # Establish a secure session with Gmail's outgoing SMTP server using your gmail account
-        server = smtplib.SMTP('smtp.hostinger.com', 587)
+        server = smtplib.SMTP(os.environ['HOST_EMAIL_SERVER'], os.environ['HOST_EMAIL_PORT'])
         server.starttls()
         server.login(sender_email, sender_password)
 

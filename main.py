@@ -71,11 +71,11 @@ def chat():
     elif run_status.status == 'requires_action':
       # Handle the function call
       for tool_call in run_status.required_action.submit_tool_outputs.tool_calls:
-        if tool_call.function.name == "solar_panel_calculations":
+        if tool_call.function.name == "email_results_prompt":
           # Process solar panel calculations
           arguments = json.loads(tool_call.function.arguments)
-          output = functions.solar_panel_calculations(
-              arguments["address"], arguments["monthly_bill"])
+          output = functions.send_email_report(
+              arguments["email"], arguments["content"])
           client.beta.threads.runs.submit_tool_outputs(thread_id=thread_id,
                                                        run_id=run.id,
                                                        tool_outputs=[{
