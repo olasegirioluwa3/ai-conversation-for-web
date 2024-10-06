@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        .slide-enter-active, .slide-leave-active {
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .slide-enter, .slide-leave-to {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+    </style>
+    <title>Sliding Multi-Step Form</title>
+</head>
+
+<body class="bg-gray-100 p-8">
+
+    <div class="max-w-md mx-auto bg-white p-8 rounded-md shadow-md relative overflow-hidden" id="formContainer">
+
+        <h1 class="text-2xl font-bold mb-6">Sliding Multi-Step Form</h1>
+
+        <!-- Step 1 -->
+        <transition name="slide" mode="out-in">
+            <div class="step" id="step1" key="step1">
+                <label for="name" class="block text-sm font-medium text-gray-600">Name</label>
+                <input type="text" id="name" name="name" class="mt-1 p-2 w-full border rounded-md">
+                <button class="mt-6 bg-blue-500 text-white p-3 rounded-md" onclick="nextStep('step2')">Next</button>
+            </div>
+        </transition>
+
+        <!-- Step 2 -->
+        <transition name="slide" mode="out-in">
+            <div class="step hidden" id="step2" key="step2">
+                <label for="email" class="block text-sm font-medium text-gray-600">Email</label>
+                <input type="email" id="email" name="email" class="mt-1 p-2 w-full border rounded-md">
+                <button class="mt-6 bg-blue-500 text-white p-3 rounded-md" onclick="prevStep('step1')">Back</button>
+                <button class="ml-4 bg-blue-500 text-white p-3 rounded-md" onclick="nextStep('step3')">Next</button>
+            </div>
+        </transition>
+
+        <!-- Step 3 -->
+        <transition name="slide" mode="out-in">
+            <div class="step hidden" id="step3" key="step3">
+                <label for="message" class="block text-sm font-medium text-gray-600">Message</label>
+                <textarea id="message" name="message" rows="4" class="mt-1 p-2 w-full border rounded-md"></textarea>
+                <button class="mt-6 bg-blue-500 text-white p-3 rounded-md" onclick="prevStep('step2')">Back</button>
+                <button class="ml-4 bg-blue-500 text-white p-3 rounded-md" onclick="submitForm()">Submit</button>
+            </div>
+        </transition>
+
+    </div>
+
+    <script>
+        function nextStep(step) {
+            document.getElementById(step).classList.remove('hidden');
+            document.getElementById(step).classList.add('slide-enter');
+            setTimeout(() => {
+                document.getElementById(step).classList.remove('slide-enter');
+            }, 0);
+        }
+
+        function prevStep(step) {
+            document.getElementById(step).classList.add('slide-leave-to');
+            setTimeout(() => {
+                document.getElementById(step).classList.remove('slide-leave-to');
+                document.getElementById(step).classList.add('hidden');
+            }, 500);
+        }
+
+        function submitForm() {
+            // Implement form submission logic here
+            alert('Form submitted!');
+        }
+    </script>
+
+</body>
+
+</html>

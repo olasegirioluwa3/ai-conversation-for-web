@@ -39,15 +39,107 @@ def create_lead(name, phone, address):
     print(f"Failed to create lead: {response.text}")
 
 
-# Add lead to Airtable
-def send_email_report(email, content):
-    email="olasegirioluwafemi@gmail.com"
-    content="Hello"
+# Function to calculate ad cost for a traffic source
+def calculate_ad_cost(visitors, acquisition_type, cpm, cpc):
+    if acquisition_type == "impression":
+        # return cpm * visitors
+        print(cpm * visitors)
+    elif acquisition_type == "clicks":
+        # return cpc * visitors
+        print(cpc * visitors)
+    else:
+        # return 0
+        print(0)
+
+
+# Function to calculate total ad cost for all traffic sources
+def calculate_total_ad_cost(traffic_sources):
+    total_ad_cost = 0
+    for source in traffic_sources:
+        total_ad_cost += source["ad_cost"]
+    return total_ad_cost
+
+# Function to calculate total ad cost for all product types
+def calculate_total_ad_cost_for_products(products):
+    total_ad_cost = 0
+    for product in products:
+        total_ad_cost += calculate_total_ad_cost(product["traffic_sources"])
+    return total_ad_cost
+
+
+# Function to calculate potential lead for a traffic source
+def calculate_potential_leads(visitors, ctr):
+    return ctr * visitors
+
+
+# Function to calculate total potential_leads for all traffic sources
+def calculate_total_potential_leads(traffic_sources):
+    total_potential_lead = 0
+    for source in traffic_sources:
+        total_potential_lead += source["potential_lead"]
+    return total_potential_lead
+
+# Function to calculate total ad cost for all product types
+def calculate_total_potential_leads_for_products(products):
+    total_potential_lead = 0
+    for product in products:
+        total_potential_lead += calculate_total_potential_leads(product["traffic_sources"])
+    return total_potential_lead
+
+
+# Function to calculate total closed customers for a traffic source
+def calculate_total_closed_customers(traffic_sources):
+    total_closed_customers = 0
+    for source in traffic_sources:
+        total_closed_customers += source["closed_customers"]
+    return total_closed_customers
+
+def calculate_total_closed_customers_for_products(products):
+    total_closed_customers = 0
+    for product in products:
+        total_closed_customers += calculate_total_ad_cost(product["traffic_sources"])
+    return total_closed_customers
+
+
+# Function to calculate total closed customers for a traffic source
+def calculate_total_visitors(traffic_sources):
+    total_visitors = 0
+    for source in traffic_sources:
+        total_visitors += source["visitors"]
+    return total_visitors
+
+def calculate_total_monthly_revenue(products):
+    total_visitors = 0
+    for source in products:
+        total_visitors += source["monthly_revenue"]
+    return total_visitors
+
+def calculate_total_product_cost(products):
+    total_product_cost = 0
+    for source in products:
+        total_product_cost += source["actual_product_cost"]
+    return total_product_cost
+
+# Function to calculate total Operating expenses in different categories
+def calculate_total_expenses(expenses):
+    total_expenses = sum(expenses.values())
+    return total_expenses
+
+# Function to calculate total Overhead expenses in different categories
+def calculate_total_overhead_expenses(overhead_expenses):
+    total_overhead_expenses = sum(overhead_expenses.values())
+    return total_overhead_expenses
+
+
+# send email
+def send_email(email, subject, content):
+    email=email
+    content=content
     # Email configuration
     sender_email = os.environ['HOST_EMAIL_ADDRESS']
     sender_password = os.environ['HOST_EMAIL_PASSWORD']   # Your email password
     receiver_email = email  # Recipient's email address
-    subject = 'Lead Created Report'
+    subject = subject
 
     # Create a MIME message
     msg = MIMEMultipart()
@@ -56,7 +148,7 @@ def send_email_report(email, content):
     msg['Subject'] = subject
 
     # Email body content
-    body = f'Lead created successfully.\n\n{content}'
+    body = f'\n\n{content}'
     msg.attach(MIMEText(body, 'plain'))
 
     try:
@@ -130,28 +222,47 @@ def create_assistant(client):
                 }
             },
             {
-                "type": "function",  # This adds the lead capture as a tool
+                "type": "function",
                 "function": {
-                    "name": "create_lead",
-                    "description":
-                    "Capture lead details and save to Airtable.",
+                    "name": "calculate_ad_cost",
+                    "description": "Calculate the cost of advertising based on different acquisition types.",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "name": {
-                                "type": "string",
-                                "description": "Name of the lead."
+                            "visitors": {
+                                "type": "integer",
+                                "description": "Number of visitors or impressions."
                             },
-                            "phone": {
+                            "acquisition_type": {
                                 "type": "string",
-                                "description": "Phone number of the lead."
+                                "description": "Type of acquisition ('impression' or 'clicks')."
                             },
-                            "address": {
-                                "type": "string",
-                                "description": "Address of the lead."
+                            "cpm": {
+                                "type": "number",
+                                "description": "Cost per thousand impressions (CPM) in dollars."
+                            },
+                            "cpc": {
+                                "type": "number",
+                                "description": "Cost per click (CPC) in dollars."
                             }
                         },
-                        "required": ["name", "phone", "address"]
+                        "required": ["visitors", "acquisition_type", "cpm", "cpc"]
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "send_email",
+                    "description": "Send an email to user specified address, requests email if does not have it yet and the user must provide content generate content if content doesn't exist, the system should try to create one",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "email": {"type": "string", "description": "Recipient's email address."},
+                            "subject": {"type": "string", "description": "Subject of the email."},
+                            "content": {"type": "string", "description": "Content of the email."}
+                        },
+                        "required": ["email", "subject", "content"]
                     }
                 }
             }
